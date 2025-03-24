@@ -17,7 +17,7 @@ namespace RegionsAPI.Controllers
         [Route("api/Regions/findCountries/{regionID}")]
         public async virtual Task<IActionResult> GetCountries([FromRoute][Required] string regionID)
         {
-            var countries = await _regionService.GetCountriesAsync(regionID);
+            var countries = await _regionService.GetCountriesbyRegion(regionID);
             return Ok(countries);
         }
 
@@ -26,6 +26,14 @@ namespace RegionsAPI.Controllers
         public async virtual Task<IActionResult> GetRegions()
         {
             var countries = await _regionService.GetRegions();
+            return Ok(countries);
+        }
+
+        [HttpGet]
+        [Route("api/Regions/getCountriesbyFilter/{filter}")]
+        public async virtual Task<IActionResult> GetCountriesbyFilter([FromRoute][Required] string filter)
+        {
+            var countries = await _regionService.GetCountriesbyFilter(filter);
             return Ok(countries);
         }
     }

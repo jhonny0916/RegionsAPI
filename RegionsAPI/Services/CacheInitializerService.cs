@@ -11,7 +11,7 @@
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            await _regionService.GetCountriesAsync(string.Empty);
+            await _regionService.GetCountriesDataAsync();
         }
 
         public Task StopAsync(CancellationToken cancellationToken)

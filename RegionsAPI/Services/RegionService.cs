@@ -16,7 +16,7 @@ namespace RegionsAPI.Services
             _cache = cache;
         }
 
-        private async Task<string?> GetCountriesDataAsync()
+        public async Task<string?> GetCountriesDataAsync()
         {
             if (!_cache.TryGetValue(CountriesCacheKey, out string? countriesData))
             {
@@ -31,7 +31,7 @@ namespace RegionsAPI.Services
             return countriesData;
         }
 
-        public async Task<List<CountriesDTO>> GetCountriesAsync(string regionID)
+        public async Task<List<CountriesDTO>> GetCountriesbyRegion(string regionID)
         {
             List<CountriesDTO> countriesDTO = new List<CountriesDTO>();
             var response = await GetCountriesDataAsync(); ;
@@ -46,7 +46,16 @@ namespace RegionsAPI.Services
             var response = await GetCountriesDataAsync();
             var countries = response != null ? JsonConvert.DeserializeObject<List<CountriesDTO>>(response) : null;
             regions = countries != null ? countries.Select(x=> x.Region).Distinct().ToList() : [];
-            return regions != null ? regions : [];
+            return regions;
+        }
+
+        public async Task<List<string>> GetCountriesbyFilter(string filter)
+        {
+            List<string> filterCountries = new List<string>();
+            var response = await GetCountriesDataAsync(); ;
+            var countries = response != null ? JsonConvert.DeserializeObject<List<CountriesDTO>>(response)?.Where(c => c.Name?.Official != null && c.Name?.Common != null ? c.Name.Official.ToLower().Contains(filter.ToLower()) || c.Name.Common.ToLower().Contains(filter) : false) : null;
+            filterCountries = countries != null ? countries.Select(x => x.Name?.Common).Where(name => name != null).Distinct().Cast<string>().ToList() : [];
+            return filterCountries;
         }
 
     }
